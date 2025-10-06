@@ -42,8 +42,7 @@ resource "azurerm_role_assignment" "uai_contributor" {
   role_definition_id = data.azurerm_role_definition.contributor.id
   principal_id       = azurerm_user_assigned_identity.uai.principal_id
 
-  # Create a stable GUID name for the role assignment
-  name = guid(azurerm_resource_group.rg.id,
-              azurerm_user_assigned_identity.uai.principal_id,
-              data.azurerm_role_definition.contributor.id)
+  # deterministic UUID (stable across applies)
+  name = uuidv5("url", "${azurerm_resource_group.rg.id}-${azurerm_user_assigned_identity.uai.principal_id}-${data.azurerm_role_definition.contributor.id}")
 }
+
